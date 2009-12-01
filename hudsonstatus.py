@@ -15,8 +15,11 @@ def getUrl(server,job):
     
 def getBuildStatus(server, job):
     
-    print urlString % server, job
-    eval(urllib.urlopen().read())   
+    url = getUrl(server,job)
+    print "URL:" + url
+    hudsonJob = eval(urllib.urlopen(url).read())
+    print hudsonJob
+    print hudsonJob['result']
     
 
 def main(argv):
@@ -37,7 +40,8 @@ def main(argv):
         elif opt in ("-j", "--job"):
             job = arg
             
-        
+    
+    getBuildStatus(server, job)    
         
 if __name__ == "__main__":
     main(sys.argv[1:])
