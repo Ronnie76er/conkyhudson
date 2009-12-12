@@ -7,7 +7,7 @@ import getopt
 urlString = 'http://%s/hudson/job/%s/lastBuild/api/python'
 
 def usage():
-    print "You're an idiot"
+    print 'hudsonstatus.py [--h][-s|--server] hostname [-j|--job] job name'
     return 1
 
 def getUrl(server,job):
@@ -20,13 +20,17 @@ def getBuildStatus(server, job):
     hudsonJob = eval(urllib.urlopen(url).read())
     print hudsonJob
     print hudsonJob['result']
+    print hudsonJob['culprits']
+    for culprit in hudsonJob['culprits']:
+        print culprit['fullName']
+    
     
 
 def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hs:j:", ["help", "server", "job"])
     except getopt.GetoptError:
-        usage()
+        usage(argv)
         sys.exit(2)
     
     for opt, arg in opts:
