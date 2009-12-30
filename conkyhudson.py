@@ -1,6 +1,26 @@
 #!/usr/bin/python
 
 import sys
+import getopt
+import hudsonstatus
+import re
+
+
+def usage(argv):
+    print "DUMB"
+    
+def parseTemplate(contents):
+    print "HERE"
+    contents.find
+    thing = re.findall("\[*\]", contents)
+    print thing
+
+def outputBuildStatus(template):
+    print template
+    f=open(template)
+    contents = f.read()
+    print contents
+    parseTemplate(contents)
 
 
 def main(argv):
@@ -20,6 +40,12 @@ def main(argv):
             
         elif opt in ("-j", "--jobs"):
             jobs = arg
+            
+        elif opt in ("-t", "--template"):
+            template = arg
+            
+    outputBuildStatus(template)
+    
     
 if __name__ == "__main__":
     main(sys.argv[1:])

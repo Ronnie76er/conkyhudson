@@ -23,6 +23,7 @@ def getBuildStatus(server, job):
     print hudsonJob['culprits']
     for culprit in hudsonJob['culprits']:
         print culprit['fullName']
+    return hudsonJob
     
     
 
