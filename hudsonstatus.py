@@ -8,12 +8,12 @@ class HudsonStatus:
     urlString = 'http://%s/hudson/job/%s/lastBuild/api/python'
 
    
-    def getUrl(server,job):
-        return urlString % (server, job)
+    def getUrl(self,server,job):
+        return self.urlString % (server, job)
         
-    def getBuildStatus(server, job):
+    def getBuildStatus(self,server, job):
         
-        url = getUrl(server,job)
+        url = self.getUrl(server,job)
         print "URL:" + url
         hudsonJob = eval(urllib.urlopen(url).read())
         print hudsonJob

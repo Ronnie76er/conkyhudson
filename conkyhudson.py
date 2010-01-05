@@ -13,7 +13,8 @@ def parseTemplateEntry(entry):
     print entry
     entryContents = entry.split(";")
     print entryContents
-    getBuildStatus(entryContents[0], entryContents[1])
+    x = hudsonstatus.HudsonStatus()
+    x.getBuildStatus(entryContents[0], entryContents[1])
     
     
 def parseTemplate(contents):
