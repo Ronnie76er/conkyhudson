@@ -9,11 +9,19 @@ import re
 def usage(argv):
     print "DUMB"
     
+def parseTemplateEntry(entry):
+    print entry
+    entryContents = entry.split(";")
+    print entryContents
+    getBuildStatus(entryContents[0], entryContents[1])
+    
+    
 def parseTemplate(contents):
     print "HERE"
     contents.find
-    thing = re.findall("\[*\]", contents)
+    thing = re.findall("\[(.*?)\]", contents)
     print thing
+    parseTemplateEntry(thing[0])
 
 def outputBuildStatus(template):
     print template
