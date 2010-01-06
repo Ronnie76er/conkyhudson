@@ -1,12 +1,13 @@
 #!/usr/bin/python
 
-import pythonhudson
+import hudsonstatus
 import unittest
 
 class TestUsage(unittest.TestCase):
     def testGetUrlString(self):
+        x = hudsonstatus.HudsonStatus()
         self.assertEqual("http://somewhere/hudson/job/somejob/lastBuild/api/python",
-                         pythonhudson.getUrl("somewhere", "somejob"))
+                         x.getUrl("somewhere", "somejob"))
         
         
 if __name__ == "__main__":
