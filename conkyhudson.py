@@ -10,11 +10,8 @@ def usage(argv):
     print "DUMB"
     
 def parseTemplateEntry(entry):
-    print entry
-    entryContents = entry.split(";")
-    print entryContents
     x = hudsonstatus.HudsonStatus()
-    x.getBuildStatus(entryContents[0], entryContents[1])
+    x.getBuildStatus(entry)
     
     
 def parseTemplate(contents):
@@ -22,7 +19,8 @@ def parseTemplate(contents):
     contents.find
     thing = re.findall("\[(.*?)\]", contents)
     print thing
-    parseTemplateEntry(thing[0])
+    for thingything in thing:
+        parseTemplateEntry(thingything)
 
 def outputBuildStatus(template):
     print template
