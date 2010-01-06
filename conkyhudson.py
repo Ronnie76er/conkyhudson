@@ -19,8 +19,9 @@ def parseTemplate(contents):
     contents.find
     thing = re.findall("\[(.*?)\]", contents)
     print thing
-    for thingything in thing:
-        parseTemplateEntry(thingything)
+    return thing
+#    for thingything in thing:
+#        parseTemplateEntry(thingything)
 
 def outputBuildStatus(template):
     print template
