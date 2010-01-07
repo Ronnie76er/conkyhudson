@@ -13,23 +13,28 @@ def parseTemplateEntry(entry):
     x = hudsonstatus.HudsonStatus()
     x.getBuildStatus(entry)
     
+def parseAllTemplateValues(templateValues):
+    for templateValue in templateValues:
+        fieldValues = templateValue.split(";")
+        if(fieldValues[0] == "job"):
+            print 'Its a job: ' + fieldValues[2] + ', ' + fieldValues[3] + ', id = ' + fieldValues[1]
+        else:
+            print "Field: " + fieldValues[1] + ", " + fieldValues[2]
+    
     
 def parseTemplate(contents):
     print "HERE"
     contents.find
     thing = re.findall("\[(.*?)\]", contents)
-    print thing
     return thing
 #    for thingything in thing:
 #        parseTemplateEntry(thingything)
 
 def outputBuildStatus(template):
-    print template
     f=open(template)
     contents = f.read()
-    print contents
-    parseTemplate(contents)
-
+    templateValues = parseTemplate(contents)
+    parseAllTemplateValues(templateValues)
 
 def main(argv):
     try:
