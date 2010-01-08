@@ -11,19 +11,10 @@ class HudsonStatus:
     def getUrl(self,server,job):
         return self.urlString % (server, job)
         
-    def getBuildStatus(self,entry):
-        
-        entryContents = entry.split(";")
-        
-        server = entryContents[0]
-        job = entryContents[1]
-        field = entryContents[2]
-        
-        
+    def getBuildStatus(self,server, job):
         url = self.getUrl(server,job)
         print "URL:" + url
         hudsonJob = eval(urllib.urlopen(url).read())
-        print field + ":" + hudsonJob[field]
         return hudsonJob
         
         

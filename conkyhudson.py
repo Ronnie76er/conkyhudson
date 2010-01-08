@@ -9,26 +9,38 @@ import re
 def usage(argv):
     print "DUMB"
     
-def parseTemplateEntry(entry):
+def getJobStatus(server, job):
     x = hudsonstatus.HudsonStatus()
-    x.getBuildStatus(entry)
+    return x.getBuildStatus(server, job)
     
 def parseAllTemplateValues(templateValues):
+    jobs = {}
+    fields = {}
+    
+    
     for templateValue in templateValues:
         fieldValues = templateValue.split(";")
         if(fieldValues[0] == "job"):
             print 'Its a job: ' + fieldValues[2] + ', ' + fieldValues[3] + ', id = ' + fieldValues[1]
+            status = getJobStatus(fieldValues[2],fieldValues[3])
+            jobs[fieldValues[1]] = status
+            
         else:
-            print "Field: " + fieldValues[1] + ", " + fieldValues[2]
+            if fieldValues[0] not in fields:
+                fields[fieldValues[0]] = []
+            fields[fieldValues[0]].append({"field": fieldValues[1], "letters": fieldValues[2]})
+    
+    for jobKey, job in jobs.iteritems():
+        print "Job ID: ", jobKey, "\n", job
+        
+    for fieldKey, field in fields.iteritems():
+        print "Field ID: ", fieldKey, " , field: ", field
     
     
 def parseTemplate(contents):
-    print "HERE"
     contents.find
     thing = re.findall("\[(.*?)\]", contents)
     return thing
-#    for thingything in thing:
-#        parseTemplateEntry(thingything)
 
 def outputBuildStatus(template):
     f=open(template)
