@@ -13,67 +13,133 @@ def getJobStatus(server, job):
     x = hudsonstatus.HudsonStatus()
     return x.getBuildStatus(server, job)
     
-def getJobs(templateIter, contents):
+    
+def getOutput(template, jobs):
+    output = u""
+    end = False
+    a = 0
+        
+    # a and b are indexes in the template string
+    # moving from left to right the string is processed
+    # b is index of the opening bracket and a of the closing bracket
+    # everything between b and a is a template that needs to be parsed
+    while not end:
+        b = template.find('[', a)
+        
+        if b == -1:
+            b = len(template)
+            end = True            
+        # if there is something between a and b, append it straight to output
+        if b > a:
+            output += template[a : b]
+            # check for the escape char (if we are not at the end)
+            if template[b - 1] == '\\' and not end:
+                # if its there, replace it by the bracket
+                output = output[:-1] + '['
+                # skip the bracket in the input string and continue from the beginning
+                a = b + 1
+                continue
+                    
+        if end:
+            break
+            
+        a = template.find(']', b)
+            
+        if a == -1:
+            self.logError("Missing terminal bracket (]) for a template item")
+            return u""
+            
+        # if there is some template text...
+        if a > b + 1:
+            output += parseResultFields(template[b + 1 : a], jobs)
+            
+        a = a + 1
+
+    return output
+
+    
+def getAndRemoveJobs(templateIter, contents):
     jobs = {}
     charsRemoved = 0
     
     for templateValue in templateIter:
         theString = templateValue.group(1)
-        print theString
+        #print theString
         fieldValues = theString.split(";")
-        print fieldValues
+        #print fieldValues
         if(fieldValues[0] == "job"):
-            print 'Its a job: ' + fieldValues[2] + ', ' + fieldValues[3] + ', id = ' + fieldValues[1]
+            #print 'Its a job: ' + fieldValues[2] + ', ' + fieldValues[3] + ', id = ' + fieldValues[1]
             status = getJobStatus(fieldValues[2],fieldValues[3])
             jobs[fieldValues[1]] = status
- #           print contents[templateValue.end()+1:]
+            #print contents[templateValue.end()+1:]
             contents = contents[0:templateValue.start() - charsRemoved] + contents[templateValue.end()- charsRemoved+1:]
             charsRemoved += templateValue.end() - templateValue.start()+1;
             
-    return [jobs, contents]    
+    return [jobs, contents]
+    
+def getOutputByField(fieldName, fieldValue, outputOptions):
+    print "HMM:",fieldName, fieldValue, outputOptions
+    
+    if(fieldName == "result"):
+        outputStrings = outputOptions.split(",")
+        #print outputStrings
+        if(fieldValue == "SUCCESS"):
+            return outputStrings[0]
+        elif(fieldValue == "FAILURE"):
+            return outputStrings[1]
+        elif(fieldValue == None):
+            return "Null value"
+        else:
+            return "I DON'T KNOW WHAT "+ fieldValue+ " SHOULD DO"
+        
+    
+    return "NO RULES FOR FIELD " + fieldName
 
     
-def parseAllTemplateValues(templateValues):
-    jobs = {}
-    fields = {}
+def parseResultFields(hudsonStatus, jobs):
+    #print hudsonStatus
     
+    fieldValues = hudsonStatus.split(";")
     
-    for templateValue in templateValues:
-        print 
-        fieldValues = templateValue.split(";")
-        if(fieldValues[0] == "job"):
-            print 'Its a job: ' + fieldValues[2] + ', ' + fieldValues[3] + ', id = ' + fieldValues[1]
-            status = getJobStatus(fieldValues[2],fieldValues[3])
-            jobs[fieldValues[1]] = status
-            
-        else:
-            if fieldValues[0] not in fields:
-                fields[fieldValues[0]] = []
-            fields[fieldValues[0]].append({"field": fieldValues[1], "letters": fieldValues[2]})
-    
-    for jobKey, job in jobs.iteritems():
-        print "Job ID: ", jobKey, "\n", job
+    retVal = ''
+    statusValue = None
+    if fieldValues[1] in jobs[fieldValues[0]]:
         
-    for fieldKey, field in fields.iteritems():
-        print "Field ID: ", fieldKey, " , field: ", field
+        statusValue = jobs[fieldValues[0]][fieldValues[1]]
+        
+    if len(fieldValues) == 3:
+        retVal = getOutputByField(fieldValues[1], statusValue, fieldValues[2])
+    else:
+        retVal = jobs[fieldValues[0]][fieldValues[1]]
+            
+            
+    #print "retval:", retVal
+    return retVal
+    
+    #for jobKey, job in jobs.iteritems():
+    #    
+    #    
     
     
 def parseTemplate(contents):
     thing = re.finditer("\[(.*?)\]", contents)
-    jobData = getJobs(thing,contents)
-    print "FINAL CONTENTS ====================\n", jobData[1]
-    print "DONE =============================="
+    jobData = getAndRemoveJobs(thing,contents)
+    
+    final = getOutput(jobData[1], jobData[0])
+    
+    #print "FINAL CONTENTS ====================\n",final
+    #print "DONE =============================="
 
-    return thing
+    return final
 
 def outputBuildStatus(template):
     f=open(template)
     contents = f.read()
     templateValues = parseTemplate(contents)
     
+    print templateValues
     
-    
-    parseAllTemplateValues(templateValues)
+    #parseAllTemplateValues(templateValues)
 
 def main(argv):
     try:

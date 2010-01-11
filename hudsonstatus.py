@@ -13,7 +13,7 @@ class HudsonStatus:
         
     def getBuildStatus(self,server, job):
         url = self.getUrl(server,job)
-        print "URL:" + url
+        #print "URL:" + url
         hudsonJob = eval(urllib.urlopen(url).read())
         return hudsonJob
         
