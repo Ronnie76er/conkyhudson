@@ -12,5 +12,9 @@ class TestUsage(unittest.TestCase):
         x = conkyhudson.parseResultFields("hi;hi", {"jobId1":"job"})
         self.assertEquals("Invalid Job ID: hi", x)
         
+    def testProcessResultField(self):
+        x = conkyhudson.processResultField({"result": "SUCCESS"}, "a,b,c")
+        self.assertEquals("a", x)
+        
 if __name__ == "__main__":
     unittest.main()

@@ -80,17 +80,16 @@ def processResultField(job, outputOptions):
     """Process the 'result' field """
 
 
-    if fieldValues[1] in jobs[fieldValues[0]]:
-        statusValue = jobs[fieldValues[0]][fieldValues[1]]
+    statusValue = job["result"]
 
 
     outputStrings = outputOptions.split(",")
     #print outputStrings
-    if(fieldValue == "SUCCESS"):
+    if(statusValue == "SUCCESS"):
         return outputStrings[0]
-    elif(fieldValue == "FAILURE"):
+    elif(statusValue == "FAILURE"):
         return outputStrings[1]
-    elif(fieldValue == None):
+    elif(statusValue == None):
         return "Null value"
     else:
         return "I DON'T KNOW WHAT "+ fieldValue+ " SHOULD DO"
