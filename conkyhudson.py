@@ -59,41 +59,49 @@ def getOutput(template, jobs):
 
     
 def getAndRemoveJobs(templateIter, contents):
+    """Removes the jobs from the template and gets the info from hudson
+    on the job"""
+    
     jobs = {}
     charsRemoved = 0
     
     for templateValue in templateIter:
         theString = templateValue.group(1)
-        #print theString
         fieldValues = theString.split(";")
-        #print fieldValues
         if(fieldValues[0] == "job"):
-            #print 'Its a job: ' + fieldValues[2] + ', ' + fieldValues[3] + ', id = ' + fieldValues[1]
             status = getJobStatus(fieldValues[2],fieldValues[3])
             jobs[fieldValues[1]] = status
-            #print contents[templateValue.end()+1:]
             contents = contents[0:templateValue.start() - charsRemoved] + contents[templateValue.end()- charsRemoved+1:]
             charsRemoved += templateValue.end() - templateValue.start()+1;
             
     return [jobs, contents]
     
-def getOutputByField(fieldName, fieldValue, outputOptions):
-    print "HMM:",fieldName, fieldValue, outputOptions
-    
-    if(fieldName == "result"):
-        outputStrings = outputOptions.split(",")
-        #print outputStrings
-        if(fieldValue == "SUCCESS"):
-            return outputStrings[0]
-        elif(fieldValue == "FAILURE"):
-            return outputStrings[1]
-        elif(fieldValue == None):
-            return "Null value"
-        else:
-            return "I DON'T KNOW WHAT "+ fieldValue+ " SHOULD DO"
+def processResultField(job, outputOptions):
+    """Process the 'result' field """
+
+
+    if fieldValues[1] in jobs[fieldValues[0]]:
+        statusValue = jobs[fieldValues[0]][fieldValues[1]]
+
+
+    outputStrings = outputOptions.split(",")
+    #print outputStrings
+    if(fieldValue == "SUCCESS"):
+        return outputStrings[0]
+    elif(fieldValue == "FAILURE"):
+        return outputStrings[1]
+    elif(fieldValue == None):
+        return "Null value"
+    else:
+        return "I DON'T KNOW WHAT "+ fieldValue+ " SHOULD DO"
         
+def processCulpritField(fieldValue, outputOptions):
+    """Process the 'culprit' field"""
+    print fieldValue, outputOptions
+    return "None"
     
-    return "NO RULES FOR FIELD " + fieldName
+    
+    
 
     
 def parseResultFields(hudsonStatus, jobs):
@@ -101,24 +109,28 @@ def parseResultFields(hudsonStatus, jobs):
     
     fieldValues = hudsonStatus.split(";")
     
+    jobId = fieldValues[0]
+    job = {}
+    if jobId in jobs:
+        job = jobs[jobId]
+    else:
+        return "Invalid Job ID: " + jobId
+    
+    fieldName = fieldValues[1]
+    
     retVal = ''
     statusValue = None
-    if fieldValues[1] in jobs[fieldValues[0]]:
-        
-        statusValue = jobs[fieldValues[0]][fieldValues[1]]
-        
-    if len(fieldValues) == 3:
-        retVal = getOutputByField(fieldValues[1], statusValue, fieldValues[2])
-    else:
-        retVal = jobs[fieldValues[0]][fieldValues[1]]
-            
-            
-    #print "retval:", retVal
-    return retVal
     
-    #for jobKey, job in jobs.iteritems():
-    #    
-    #    
+    if(fieldName == "result"):
+        processResultField(job, fieldValues[2])
+    
+    #if len(fieldValues) == 3:
+    #    retVal = getOutputByField(fieldValues[1], statusValue, fieldValues[2])
+    #else:
+    #    retVal = jobs[fieldValues[0]][fieldValues[1]]
+    #        
+    #        
+    return retVal
     
     
 def parseTemplate(contents):
