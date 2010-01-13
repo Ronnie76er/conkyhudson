@@ -1,5 +1,5 @@
 [job;1;someurl:8080;somejob]
-[job;2;someurl:8080;somejob]
+[job;2;someurl:8080;somejob] 
 ${color lightgray} [1;fullDisplayName]
 ${font pyrobats:size=38} [1;result;j,b,c]
 ${font pyrobats:size=38} [1;culprit;a,b,c]
