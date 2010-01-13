@@ -82,7 +82,14 @@ def processResultField(job, outputOptions):
 
     statusValue = job["result"]
     building = job["building"]
-
+    if(outputOptions == None):
+        if(statusValue == None):
+            if(building == True):
+                return "Building..."
+            else:
+                return "No status"
+        return statusValue
+    
     outputStrings = outputOptions.split(",")
     #print outputStrings
     if(statusValue == "SUCCESS"):

@@ -21,6 +21,20 @@ class TestUsage(unittest.TestCase):
                                             "building":"false"}, "a,b,c")
         self.assertEquals("a", x)
         
+    def testProcessResultFieldNoOutputOptions(self):
+        x = conkyhudson.processResultField({"result": "SUCCESS",
+                                            "building":"false"}, None)
+        self.assertEquals("SUCCESS", x)
+        x = conkyhudson.processResultField({"result": "FAILURE",
+                                            "building":False}, None)
+        self.assertEquals("FAILURE", x)
+        x = conkyhudson.processResultField({"result": None,
+                                            "building":True}, None)
+        self.assertEquals("Building...", x)
+        x = conkyhudson.processResultField({"result": None,
+                                            "building":False}, None)
+        self.assertEquals("No status", x)
+        
     def testProcessCulpritField(self):
         x = conkyhudson.processCulpritField({
             "culprits":[
