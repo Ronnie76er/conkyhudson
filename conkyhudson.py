@@ -81,7 +81,7 @@ def processResultField(job, outputOptions):
 
 
     statusValue = job["result"]
-
+    building = job["building"]
 
     outputStrings = outputOptions.split(",")
     #print outputStrings
@@ -89,15 +89,26 @@ def processResultField(job, outputOptions):
         return outputStrings[0]
     elif(statusValue == "FAILURE"):
         return outputStrings[1]
-    elif(statusValue == None):
-        return "Null value"
+    elif(statusValue == None and building == True):
+        return outputStrings[2]
     else:
-        return "I DON'T KNOW WHAT "+ fieldValue+ " SHOULD DO"
+        return "Error"
         
-def processCulpritField(fieldValue, outputOptions):
+def processCulpritField(job, outputOptions):
     """Process the 'culprit' field"""
-    print fieldValue, outputOptions
-    return "None"
+    
+    culprits = job["culprits"]
+    if(culprits == None):
+        return outputOptions
+    
+    culpritsString = ''
+    
+    for culprit in culprits:
+        if(culpritsString != ''):
+            culpritsString += ", "
+        culpritsString += culprit["fullName"]
+        
+    return culpritsString
     
     
     
@@ -113,7 +124,7 @@ def parseResultFields(hudsonStatus, jobs):
     if jobId in jobs:
         job = jobs[jobId]
     else:
-        return "Invalid Job ID: " + jobId
+        return "No Data" 
     
     fieldName = fieldValues[1]
     
@@ -122,6 +133,8 @@ def parseResultFields(hudsonStatus, jobs):
     
     if(fieldName == "result"):
         retVal = processResultField(job, fieldValues[2])
+    elif(fieldName == "culprit"):
+        retVal = processCulpritField(job, fieldValues[2])
     else: #if it doesn't match anything, just attempt to return it's value
         retVal = job[fieldName]
     
