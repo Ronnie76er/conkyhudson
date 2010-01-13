@@ -121,7 +121,9 @@ def parseResultFields(hudsonStatus, jobs):
     statusValue = None
     
     if(fieldName == "result"):
-        processResultField(job, fieldValues[2])
+        retVal = processResultField(job, fieldValues[2])
+    else: #if it doesn't match anything, just attempt to return it's value
+        retVal = job[fieldName]
     
     #if len(fieldValues) == 3:
     #    retVal = getOutputByField(fieldValues[1], statusValue, fieldValues[2])

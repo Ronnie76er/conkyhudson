@@ -12,6 +12,10 @@ class TestUsage(unittest.TestCase):
         x = conkyhudson.parseResultFields("hi;hi", {"jobId1":"job"})
         self.assertEquals("Invalid Job ID: hi", x)
         
+    def testParseResultFieldsUnhandledField(self):
+        x = conkyhudson.parseResultFields("jobId1;field", {"jobId1":{"field":"Some value in a field"}})
+        self.assertEquals("Some value in a field", x)
+        
     def testProcessResultField(self):
         x = conkyhudson.processResultField({"result": "SUCCESS"}, "a,b,c")
         self.assertEquals("a", x)
