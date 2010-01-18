@@ -43,6 +43,10 @@ class TestUsage(unittest.TestCase):
                 {"fullName": "name3"}
             ]}, "None")
         self.assertEquals("name1, name2, name3", x)
-        
+    
+    def testParseResultFieldsWithResultNoOptions(self):
+        x = conkyhudson.parseResultFields("jobId1;result", {"jobId1":{"result":"SUCCESS",
+                                                                      "building":False}})
+        self.assertEquals("SUCCESS", x)
 if __name__ == "__main__":
     unittest.main()

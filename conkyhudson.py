@@ -122,8 +122,13 @@ def processCulpritField(job, outputOptions):
 
     
 def parseResultFields(hudsonStatus, jobs):
-    #print hudsonStatus
+    """
+    Taking in the input from the template, in the form of [job;field;output values]
+    and taking in the data from the jobs, return an appropriate string for the output.
     
+    This will depend on the type of field in hudsonStatus.
+    """
+        
     fieldValues = hudsonStatus.split(";")
     
     jobId = fieldValues[0]
@@ -134,14 +139,20 @@ def parseResultFields(hudsonStatus, jobs):
         return "No Data" 
     
     fieldName = fieldValues[1]
+    options = None
+    
+    if(len(fieldValues) > 2):
+        options = fieldValues[2]
+    
+    
     
     retVal = ''
     statusValue = None
     
     if(fieldName == "result"):
-        retVal = processResultField(job, fieldValues[2])
+        retVal = processResultField(job, options)
     elif(fieldName == "culprit"):
-        retVal = processCulpritField(job, fieldValues[2])
+        retVal = processCulpritField(job, options)
     else: #if it doesn't match anything, just attempt to return it's value
         retVal = job[fieldName]
     
