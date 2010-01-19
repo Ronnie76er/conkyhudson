@@ -1,4 +1,5 @@
 [job;1;someurl:8080;somejob]
-${color lightgray} [1;fullDisplayName]
-[1;result]
-[1;culprit]
+${color lightgray}[1;fullDisplayName]
+
+${color lightgray}[1;result]
+${color lightgray}[1;culprit]
