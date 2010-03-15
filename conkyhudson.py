@@ -98,6 +98,8 @@ def processResultField(job, outputOptions):
         return outputStrings[1]
     elif(statusValue == None and building == True):
         return outputStrings[2]
+    elif(statusValue == "UNSTABLE"):
+        return outputStrings[3]
     else:
         return "Error"
         
